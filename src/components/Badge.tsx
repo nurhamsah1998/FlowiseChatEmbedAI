@@ -48,7 +48,7 @@ export const Badge = (props: Props) => {
             'background-color': props.badgeBackgroundColor ?? '#ffffff',
           }}
         >
-          'Powered byyyyyyyyyyyyyyy'
+          'Powered '
           <a
             ref={liteBadge}
             href={props.footer?.companyLink ?? 'https://flowiseai.com'}
@@ -58,7 +58,7 @@ export const Badge = (props: Props) => {
             id="lite-badge"
             style={{ 'font-weight': 'bold', color: props.footer?.textColor ?? props.poweredByTextColor ?? defaultTextColor }}
           >
-            'Flowiseeeeeeeeeeeeeeee'
+            'akjsdkajhdkjasd'
           </a>
         </span>
       </Show>
