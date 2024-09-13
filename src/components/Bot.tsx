@@ -1340,6 +1340,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
             badgeBackgroundColor={props.badgeBackgroundColor}
             poweredByTextColor={props.poweredByTextColor}
             botContainer={botContainer}
+            
           /> */}
         </div>
       </div>
