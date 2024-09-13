@@ -16,18 +16,18 @@ type BotProps = {
 let elementUsed: Element | undefined;
 
 export const initFull = async (props: BotProps & { id?: string }) => {
-  // destroy();
-  // const fullElement = props.id ? document.getElementById(props.id) : document.querySelector('hegira-fullchatbot');
-  // if (!fullElement) throw new Error('<hegira-fullchatbot> element not found.');
-  // const res = await axios.get(
-  //   'https://portal.hegira.co.id/api/webhook/whatsapp/e934b66c-4d50-48cb-a206-c0d96e6da59f/fcd23c39-b298-4d7a-8f4c-8de6443dee64',
-  // );
-  // if (res?.data !== 'OK') {
-  //   alert(`${props.token}`);
-  // } else {
-  //   Object.assign(fullElement, props);
-  //   elementUsed = fullElement;
-  // }
+  destroy();
+  const fullElement = props.id ? document.getElementById(props.id) : document.querySelector('hegira-fullchatbot');
+  if (!fullElement) throw new Error('<hegira-fullchatbot> element not found.');
+  const res = await axios.get(
+    'https://portal.hegira.co.id/api/webhook/whatsapp/e934b66c-4d50-48cb-a206-c0d96e6da59f/fcd23c39-b298-4d7a-8f4c-8de6443dee64',
+  );
+  if (res?.data !== 'OK') {
+    alert(`${props.token}`);
+  } else {
+    Object.assign(fullElement, props);
+    elementUsed = fullElement;
+  }
 };
 
 export const init = (props: BotProps) => {
