@@ -22,7 +22,7 @@ export const initFull = async (props: BotProps & { id?: string }) => {
       test.innerHTML = `<p>${props?.token}, ===============</p>`;
     })
     .catch((error) => {
-      console.log(error, props?.token, '<---------');
+      console.log(error, props?.token, '<--------');
     });
   destroy();
   const test = document.createElement('p');
