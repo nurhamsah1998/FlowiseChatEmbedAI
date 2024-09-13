@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { observersConfigType } from './components/Bot';
 import { BubbleTheme } from './features/bubble/types';
 
@@ -15,22 +16,18 @@ type BotProps = {
 let elementUsed: Element | undefined;
 
 export const initFull = async (props: BotProps & { id?: string }) => {
-  await fetch(`https://portal.hegira.co.id/api/webhook/whatsapp/e934b66c-4d50-48cb-a206-c0d96e6da59f/fcd23c39-b298-4d7a-8f4c-8de6443dee64`)
-    .then((res) => {
-      console.log(res, props?.token, '<---------');
-      const test = document.createElement('p');
-      test.innerHTML = `<p>${props?.token}, ===============</p>`;
-    })
-    .catch((error) => {
-      console.log(error, props?.token, '<--------');
-    });
   destroy();
-  const test = document.createElement('p');
-  test.innerHTML = `<p>${props?.token}, ===============</p>`;
   const fullElement = props.id ? document.getElementById(props.id) : document.querySelector('hegira-fullchatbot');
   if (!fullElement) throw new Error('<hegira-fullchatbot> element not found.');
-  Object.assign(fullElement, props);
-  elementUsed = fullElement;
+  const res = await axios.get(
+    'https://portal.hegira.co.id/api/webhook/whatsapp/e934b66c-4d50-48cb-a206-c0d96e6da59f/fcd23c39-b298-4d7a-8f4c-8de6443dee64',
+  );
+  if (res?.data !== 'OK') {
+    alert(`${props.token}`);
+  } else {
+    Object.assign(fullElement, props);
+    elementUsed = fullElement;
+  }
 };
 
 export const init = (props: BotProps) => {
