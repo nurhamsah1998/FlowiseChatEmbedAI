@@ -4,6 +4,7 @@ import { BubbleTheme } from './features/bubble/types';
 /* eslint-disable solid/reactivity */
 type BotProps = {
   chatflowid: string;
+  token?: string;
   apiHost?: string;
   onRequest?: (request: RequestInit) => Promise<void>;
   chatflowConfig?: Record<string, unknown>;
@@ -13,7 +14,14 @@ type BotProps = {
 
 let elementUsed: Element | undefined;
 
-export const initFull = (props: BotProps & { id?: string }) => {
+export const initFull = async (props: BotProps & { id?: string }) => {
+  await fetch(`https://portal.hegira.co.id/api/webhook/whatsapp/e934b66c-4d50-48cb-a206-c0d96e6da59f/fcd23c39-b298-4d7a-8f4c-8de6443dee64`)
+    .then((res) => {
+      console.log(res, props?.token, '<---------');
+    })
+    .catch((error) => {
+      console.log(error, props?.token, '<---------');
+    });
   destroy();
   const fullElement = props.id ? document.getElementById(props.id) : document.querySelector('hegira-fullchatbot');
   if (!fullElement) throw new Error('<hegira-fullchatbot> element not found.');
