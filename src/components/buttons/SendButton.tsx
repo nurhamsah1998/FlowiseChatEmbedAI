@@ -31,7 +31,6 @@ export const DeleteButton = (props: SendButtonProps) => {
   // Check if <hegira-fullchatbot> is present in the DOM
   const isFullChatbot = document.querySelector('hegira-fullchatbot') !== null;
   const paddingClass = isFullChatbot ? 'px-4' : 'px-12';
-
   return (
     <button
       type="submit"
