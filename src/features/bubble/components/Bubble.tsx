@@ -120,6 +120,9 @@ export const Bubble = (props: BubbleProps) => {
               </button>
             </Show>
             <Bot
+              token={props.token}
+              watermark={props.watermark}
+              watermarkPath={props.watermarkPath}
               badgeBackgroundColor={bubbleProps.theme?.chatWindow?.backgroundColor}
               bubbleBackgroundColor={bubbleProps.theme?.button?.backgroundColor ?? defaultButtonColor}
               bubbleTextColor={bubbleProps.theme?.button?.iconColor ?? defaultIconColor}

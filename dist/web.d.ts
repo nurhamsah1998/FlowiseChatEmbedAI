@@ -1,7 +1,6 @@
 declare const chatbot: {
     initFull: (props: {
         chatflowid: string;
-        token?: string | undefined;
         apiHost?: string | undefined;
         onRequest?: ((request: RequestInit) => Promise<void>) | undefined;
         chatflowConfig?: Record<string, unknown> | undefined;
@@ -12,7 +11,6 @@ declare const chatbot: {
     }) => Promise<void>;
     init: (props: {
         chatflowid: string;
-        token?: string | undefined;
         apiHost?: string | undefined;
         onRequest?: ((request: RequestInit) => Promise<void>) | undefined;
         chatflowConfig?: Record<string, unknown> | undefined;

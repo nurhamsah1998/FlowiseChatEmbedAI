@@ -19,6 +19,14 @@ export type UploadsConfig = {
     isSpeechToTextEnabled: boolean;
     isFileUploadAllowed: boolean;
 };
+export type PropsEnvironment = {
+    token: string | null;
+    isCustomWatermark: boolean;
+    watermark: string;
+    watermarkPath: string;
+    isLoading: boolean;
+    status: number;
+};
 type FilePreviewData = string | ArrayBuffer;
 type FilePreview = {
     data: FilePreviewData;
@@ -65,6 +73,9 @@ export type observersConfigType = Record<'observeUserInput' | 'observeLoading' |
 export type BotProps = {
     chatflowid: string;
     apiHost?: string;
+    token?: string;
+    watermark?: string;
+    watermarkPath?: string;
     onRequest?: (request: RequestInit) => Promise<void>;
     chatflowConfig?: Record<string, unknown>;
     welcomeMessage?: string;

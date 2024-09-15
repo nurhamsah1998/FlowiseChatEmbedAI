@@ -26,6 +26,7 @@ import { CancelButton } from './buttons/CancelButton';
 import { cancelAudioRecording, startAudioRecording, stopAudioRecording } from '@/utils/audioRecording';
 import { LeadCaptureBubble } from '@/components/bubbles/LeadCaptureBubble';
 import { removeLocalStorageChatHistory, getLocalStorageChatflow, setLocalStorageChatflow, setCookie, getCookie } from '@/utils';
+import axios from 'axios';
 
 export type FileEvent<T = EventTarget> = {
   target: T;
@@ -47,6 +48,14 @@ export type UploadsConfig = {
   isImageUploadAllowed: boolean;
   isSpeechToTextEnabled: boolean;
   isFileUploadAllowed: boolean;
+};
+export type PropsEnvironment = {
+  token: string | null;
+  isCustomWatermark: boolean;
+  watermark: string;
+  watermarkPath: string;
+  isLoading: boolean;
+  status: number;
 };
 
 type FilePreviewData = string | ArrayBuffer;
@@ -103,6 +112,10 @@ export type observersConfigType = Record<'observeUserInput' | 'observeLoading' |
 export type BotProps = {
   chatflowid: string;
   apiHost?: string;
+  token?: string;
+  /// fixedWatermark is from DB and watermark is from client (depends on isCustomWatermark)
+  watermark?: string;
+  watermarkPath?: string;
   onRequest?: (request: RequestInit) => Promise<void>;
   chatflowConfig?: Record<string, unknown>;
   welcomeMessage?: string;
@@ -220,8 +233,19 @@ const defaultWelcomeMessage = 'Hi there! How can I help?';
 
 const defaultBackgroundColor = '#ffffff';
 const defaultTextColor = '#303235';
-
-export const Bot = (botProps: BotProps & { class?: string }) => {
+const defaultDataEnvironment = {
+  token: null,
+  isCustomWatermark: false,
+  watermark: 'Hegira.',
+  watermarkPath: '#',
+  isLoading: true,
+  status: 401,
+};
+export const Bot = (
+  botProps: BotProps & {
+    class?: string;
+  },
+) => {
   // set a default value for showTitle if not set and merge with other props
   const props = mergeProps({ showTitle: true }, botProps);
   let chatContainer: HTMLDivElement | undefined;
@@ -254,6 +278,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
   const [chatFeedbackStatus, setChatFeedbackStatus] = createSignal<boolean>(false);
   const [uploadsConfig, setUploadsConfig] = createSignal<UploadsConfig>();
   const [leadsConfig, setLeadsConfig] = createSignal<LeadsConfig>();
+  const [dataEnvironment, setDataEnvironment] = createSignal<PropsEnvironment>(defaultDataEnvironment);
   const [isLeadSaved, setIsLeadSaved] = createSignal(false);
   const [leadEmail, setLeadEmail] = createSignal('');
   const [disclaimerPopupOpen, setDisclaimerPopupOpen] = createSignal(false);
@@ -271,6 +296,17 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
   // drag & drop
   const [isDragActive, setIsDragActive] = createSignal(false);
   const [uploadedFiles, setUploadedFiles] = createSignal<File[]>([]);
+
+  /// FETCH ENVIRONMENT
+  onMount(async () => {
+    try {
+      const res = await axios.get(`http://localhost:3000/api/webhook/widget/${props.token}`);
+      setDataEnvironment({ ...res.data, isLoading: false });
+    } catch (error: any) {
+      console.log(error);
+      setDataEnvironment({ ...defaultDataEnvironment, status: error?.response?.data?.status, isLoading: false });
+    }
+  });
 
   onMount(() => {
     if (botProps?.observersConfig) {
@@ -1020,6 +1056,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
   };
 
   const getInputDisabled = (): boolean => {
+    if (!dataEnvironment()?.token) return true;
     const messagesArray = messages();
     const disabled =
       loading() ||
@@ -1313,7 +1350,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
                   </div>
                 )}
               </>
-            ) : (
+            ) : dataEnvironment()?.status === 200 ? (
               <TextInput
                 backgroundColor={props.textInput?.backgroundColor}
                 textColor={props.textInput?.textColor}
@@ -1333,15 +1370,21 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
                 sendMessageSound={props.textInput?.sendMessageSound}
                 sendSoundLocation={props.textInput?.sendSoundLocation}
               />
-            )}
+            ) : null}
           </div>
-          {/* <Badge
+          <Badge
+            isLoadingGetEnvironment={dataEnvironment()?.isLoading}
+            isValidToken={dataEnvironment()?.status === 200}
+            watermarkPath={props.watermarkPath || '#'}
+            fixedWatermarkPath={dataEnvironment().watermarkPath || '#'}
             footer={props.footer}
+            isCustomWatermark={Boolean(dataEnvironment()?.isCustomWatermark)}
+            fixedWatermark={dataEnvironment()?.watermark}
+            watermark={props.watermark}
             badgeBackgroundColor={props.badgeBackgroundColor}
             poweredByTextColor={props.poweredByTextColor}
             botContainer={botContainer}
-            
-          /> */}
+          />
         </div>
       </div>
       {sourcePopupOpen() && <Popup isOpen={sourcePopupOpen()} value={sourcePopupSrc()} onClose={() => setSourcePopupOpen(false)} />}

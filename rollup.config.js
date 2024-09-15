@@ -9,8 +9,8 @@ import typescript from '@rollup/plugin-typescript';
 import { typescriptPaths } from 'rollup-plugin-typescript-paths';
 import commonjs from '@rollup/plugin-commonjs';
 import { uglify } from 'rollup-plugin-uglify';
-//import serve from "rollup-plugin-serve";
-//import livereload from "rollup-plugin-livereload";
+import serve from 'rollup-plugin-serve';
+import livereload from 'rollup-plugin-livereload';
 
 const extensions = ['.ts', '.tsx'];
 
@@ -37,15 +37,18 @@ const indexConfig = {
     typescript(),
     typescriptPaths({ preserveExtensions: true }),
     terser({ output: { comments: false } }),
-    /* If you want to see the live app
     serve({
       open: true,
       verbose: true,
-      contentBase: ["dist"],
-      host: "localhost",
-      port: 5678,
+      contentBase: ['dist'],
+      host: '127.0.0.1',
+      port: 8001,
+      historyApiFallback: '/web.js',
+      headers: {
+        'access-control-allow-origin': '*',
+      },
     }),
-    livereload({ watch: "dist" }),*/
+    livereload({ watch: 'dist' }),
   ],
 };
 

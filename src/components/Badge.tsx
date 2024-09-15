@@ -3,8 +3,17 @@ import { Show, onCleanup, onMount } from 'solid-js';
 
 type Props = {
   footer?: FooterTheme;
+  /// fixedWatermark from admin if client dont have permission to custom fixedWatermark
+  fixedWatermark?: string;
+  fixedWatermarkPath?: string;
   botContainer: HTMLDivElement | undefined;
   poweredByTextColor?: string;
+  isCustomWatermark?: boolean;
+  isLoadingGetEnvironment?: boolean;
+  isValidToken?: boolean;
+  /// watermark from client
+  watermark?: string;
+  watermarkPath?: string;
   badgeBackgroundColor?: string;
 };
 
@@ -37,30 +46,37 @@ export const Badge = (props: Props) => {
   onCleanup(() => {
     if (observer) observer.disconnect();
   });
-
   return (
     <>
       <Show when={props.footer?.showFooter === undefined || props.footer?.showFooter === null || props.footer?.showFooter === true}>
-        <span
-          class="w-full text-center px-[10px] pt-[6px] pb-[10px] m-auto text-[13px]"
-          style={{
-            color: props.footer?.textColor ?? props.poweredByTextColor ?? defaultTextColor,
-            'background-color': props.badgeBackgroundColor ?? '#ffffff',
-          }}
-        >
-          'Powered '
-          <a
-            ref={liteBadge}
-            href={props.footer?.companyLink ?? 'https://flowiseai.com'}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="lite-badge"
-            id="lite-badge"
-            style={{ 'font-weight': 'bold', color: props.footer?.textColor ?? props.poweredByTextColor ?? defaultTextColor }}
+        {props.isLoadingGetEnvironment ? (
+          <span class="w-full text-center px-[10px] pt-[6px] pb-[10px] m-auto text-[13px] text-red-600 font-semibold"> </span>
+        ) : props.isValidToken ? (
+          <span
+            class="w-full text-center px-[10px] pt-[6px] pb-[10px] m-auto text-[13px]"
+            style={{
+              color: props.footer?.textColor ?? props.poweredByTextColor ?? defaultTextColor,
+              'background-color': props.badgeBackgroundColor ?? '#ffffff',
+            }}
           >
-            'akjsdkajhdkjasd'
-          </a>
-        </span>
+            Powered by{' '}
+            {props?.fixedWatermark && (
+              <a
+                ref={liteBadge}
+                href={props.isCustomWatermark ? props.watermarkPath || '#' : props.fixedWatermarkPath}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="lite-badge"
+                id="lite-badge"
+                style={{ 'font-weight': 'bold', color: props.footer?.textColor ?? props.poweredByTextColor ?? defaultTextColor }}
+              >
+                {props.isCustomWatermark ? props.watermark || 'Hegira.' : props.fixedWatermark}
+              </a>
+            )}
+          </span>
+        ) : (
+          <span class="w-full text-center px-[10px] pt-[6px] pb-[10px] m-auto text-[13px] text-red-600 font-semibold">Invalid Token Detected !</span>
+        )}
       </Show>
       <Show when={props.footer?.showFooter === false}>
         <span
